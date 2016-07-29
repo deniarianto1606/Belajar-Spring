@@ -1,0 +1,54 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+                            http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+    <!--
+        sequenceGenerator ibarat nama instance dari sequenceGenerator
+        dengan IoC / DI, Class sequenceGenerator dibikin sekali untuk kemudian dapat dipanggil berkali-kali saat ia dibutuhkan
+    -->
+    
+    <!--Dependency Injection via Setter (Setter Injection)-->
+    <bean name="sequenceGenerator" class="com.learn.spring.dependency.injection.learn.SequenceGenerator">
+        <!--
+            property name merefer ke variable yang ada di class SequenceGenerator
+            value menginject nilai untuk variable pada property
+        -->
+        
+        <property name="prefix">
+            <value>30</value>
+        </property>
+        <property name="suffix">
+            <value>A</value>
+        </property>
+        <property name="initial">
+            <value>100000</value>
+        </property>
+        
+        
+    </bean>
+    
+    <!--Dependency Injection via Setter (Constructor Injection)-->
+<!--    <bean name="sequenceGenerator" class="com.learn.spring.dependency.injection.learn">
+        
+            property name merefer ke variable yang ada di class SequenceGenerator
+            value menginject nilai untuk variable pada property
+        
+        
+        <constructor-arg>
+            <value>30</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>A</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>100000</value>
+        </constructor-arg>
+        
+        Dependency Injection via Setter (Constructor Injection)
+    </bean>-->
+</beans>

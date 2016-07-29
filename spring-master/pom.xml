@@ -12,5 +12,6 @@
     <module>spring-security-primefaces</module>
     <module>spring-mvc</module>
     <module>spring-webflow-primefaces</module>
+    <module>spring-dependency-injection</module>
   </modules>
 </project>
