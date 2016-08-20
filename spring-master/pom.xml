@@ -9,9 +9,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
   <modules>
-    <module>spring-security-primefaces</module>
     <module>spring-mvc</module>
-    <module>spring-webflow-primefaces</module>
     <module>spring-dependency-injection</module>
+    <module>spring-security</module>
   </modules>
 </project>
