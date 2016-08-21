@@ -12,5 +12,6 @@
     <module>spring-mvc</module>
     <module>spring-dependency-injection</module>
     <module>spring-security</module>
+    <module>spring-webflow</module>
   </modules>
 </project>
