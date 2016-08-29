@@ -18,6 +18,8 @@ import javax.jms.MessageConsumer;
 import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.support.JmsUtils;
 
 /**
  *
@@ -25,30 +27,33 @@ import org.apache.activemq.command.ActiveMQQueue;
  */
 public class BackOfficeImpl implements BackOffice {
 
+    private JmsTemplate jmsTemplate;
+    private Destination destination;
+
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
+
     @Override
     public Mail receiveMail() {
-        ConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        Destination destination = new ActiveMQQueue("mail.queue");
-        
-        Connection conn = null;
+        MapMessage message = (MapMessage) jmsTemplate.receive(destination);
+        if (message == null) {
+            return null;
+        }
         try {
-            conn = cf.createConnection();
-            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageConsumer consumer = session.createConsumer(destination);
-            
-            conn.start();
-            MapMessage message = (MapMessage) consumer.receive();
             Mail mail = new Mail();
             mail.setMailId(message.getString("mailId"));
             mail.setCountry(message.getString("country"));
             mail.setWeight(message.getDouble("weight"));
-            
-            session.close();
             return mail;
-        } catch (JMSException ex) {
-            Logger.getLogger(BackOfficeImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JMSException e) {
+            throw JmsUtils.convertJmsAccessException(e);
         }
-        return null;
+
     }
-    
+
 }

@@ -14,10 +14,13 @@ import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 
 /**
  *
@@ -25,27 +28,33 @@ import org.apache.activemq.command.ActiveMQQueue;
  */
 public class FrontDeskImpl implements FrontDesk {
 
-    @Override
-    public void sendMail(Mail mail) {
-        ConnectionFactory cf = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        Destination destination = new ActiveMQQueue("mail.queue");
-        
-        Connection conn = null;
-        try {
-            conn = cf.createConnection();
-            Session session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            MessageProducer producer = session.createProducer(destination);
-            
-            MapMessage message = session.createMapMessage();
-            message.setString("mailId", mail.getMailId());
-            message.setString("country", mail.getCountry());
-            message.setDouble("weight", mail.getWeight());
-            producer.send(message);
-            
-            session.close();
-        } catch (JMSException ex) {
-            Logger.getLogger(FrontDeskImpl.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private JmsTemplate jmsTemplate;
+    private Destination destination;
+
+    public void setJmsTemplate(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
     }
-    
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
+
+    @Override
+    public void sendMail(final Mail mail) {
+        //Anonymous Inner Class as argument
+        jmsTemplate.send(destination, new MessageCreator() {
+
+            @Override
+            public Message createMessage(Session session) throws JMSException {
+                MapMessage message = session.createMapMessage();
+                message.setString("mailId", mail.getMailId());
+                message.setString("country", mail.getCountry());
+                message.setDouble("weight", mail.getWeight());
+                return message;
+            }
+
+        });
+
+    }
+
 }

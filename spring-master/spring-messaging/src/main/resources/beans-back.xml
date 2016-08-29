@@ -4,5 +4,19 @@
 
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
 ">
-    <bean id="backOffice" class="com.learn.spring.messaging.service.impl.BackOfficeImpl" />
+    <bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="tcp://localhost:61616" />
+    </bean>
+    <bean id="mailDestination" class="org.apache.activemq.command.ActiveMQQueue">
+        <constructor-arg value="mail.queue" />
+    </bean>
+    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate" >
+        <property name="connectionFactory" ref="connectionFactory" />
+        <property name="receiveTimeout" value="10000" />
+    </bean>
+
+    <bean id="backOffice" class="com.learn.spring.messaging.service.impl.BackOfficeImpl" >
+        <property name="destination" ref="mailDestination" />
+        <property name="jmsTemplate" ref="jmsTemplate"/>
+    </bean>
 </beans>
