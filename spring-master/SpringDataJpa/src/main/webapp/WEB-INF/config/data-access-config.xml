@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+                            http://www.springframework.org/schema/tx  http://www.springframework.org/schema/tx/spring-tx.xsd
+                            http://www.springframework.org/schema/data/jpa
+                            http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+ 
+    <!--Scan service and dao package--> 
+    <!--<context:component-scan base-package="com.learn.srp.repositories" />-->
+    <jpa:repositories base-package="com.learn.srp.repositories" entity-manager-factory-ref="sessionFactory"/>
+    <context:component-scan base-package="com.learn.srp.service"/>
+    
+    
+    <!--<tx:annotation-driven/>-->
+    
+    <bean id="c3p0DataSourceAbstract" class="com.mchange.v2.c3p0.ComboPooledDataSource" 
+          abstract="true" destroy-method="close">
+        <property name="acquireIncrement" value="5"/>
+        <property name="acquireRetryAttempts" value="3"/>
+        <property name="acquireRetryDelay" value="4500"/>
+        <property name="maxPoolSize" value="100"/>
+        <property name="minPoolSize" value="5"/>
+        <property name="maxStatements" value="50"/>
+        <property name="maxIdleTime" value="1000" />
+        <property name="autoCommitOnClose" value="false" />
+        <property name="initialPoolSize" value="5" />
+        <property name="maxConnectionAge" value="7200" />
+        <property name="maxIdleTimeExcessConnections" value="300" />
+        <property name="preferredTestQuery" value="select 1 from DUAL" />
+        <property name="idleConnectionTestPeriod" value="180" />
+        <property name="testConnectionOnCheckin" value="true" />
+        <property name="testConnectionOnCheckout" value="true" />
+        <property name="numHelperThreads" value="6" />
+        <property name="unreturnedConnectionTimeout" value="3600" />
+         
+    </bean>
+    <!-- you must specify named property for connection : driverClass, jdbcUrl, user, password for c3p0, if not, it will cause error -->
+    <bean id="c3p0DataSource-1" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="com.mysql.jdbc.Driver" />
+        <property name="jdbcUrl" value="${jdbc.url}" />
+        <property name="user" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
+    </bean>
+    
+    <!--    <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" id="sessionFactory" lazy-init="true">-->
+    <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" id="sessionFactory" lazy-init="true">
+        <property name="dataSource"  ref="c3p0DataSource-1"/>
+        <property name="packagesToScan" value="com.learn.srp.entity"/>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.jdbc.batch_size">20</prop>
+                <prop key="hibernate.order_inserts">true</prop>
+                <prop key="hibernate.order_updates">true</prop>
+
+            </props>
+        </property>
+            <property name="persistenceProvider">
+                <bean class="org.hibernate.jpa.HibernatePersistenceProvider"></bean>
+            </property>
+    </bean>
+    
+<!--        <bean class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" id="sessionFactory" lazy-init="true">
+    <bean class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" id="sessionFactory" lazy-init="true">
+        <property name="dataSource"  ref="c3p0DataSource-1"/>
+        <property name="packagesToScan" value="com.learn.postgres.entity"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.default_schema">${jdbc.hibernate.default_schema}</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.jdbc.batch_size">20</prop>
+                <prop key="hibernate.order_inserts">true</prop>
+                <prop key="hibernate.order_updates">true</prop>
+            
+                                <prop key="hibernate.current_session_context_class">com.inkubator.datacore.util.TransactionAwareSessionContext</prop>
+            </props>
+        </property>
+    </bean>-->
+    
+    <!--<bean id="transactionManager"  class="org.springframework.orm.hibernate5.HibernateTransactionManager">-->
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <bean id="transactionManager"  class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="dataSource" ref="c3p0DataSource-1" />
+    </bean>
+ 
+    <bean id="persistenceExceptionTranslationPostProcessor"
+          class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+</beans>
