@@ -12,12 +12,12 @@
     <module>spring-mvc</module>
     <module>spring-dependency-injection</module>
     <module>spring-security</module>
+    <module>spring-security-custom</module>
     <module>spring-webflow</module>
     <module>spring-rest</module>
     <module>TestRest</module>
     <module>spring-rest-hibernate</module>
     <module>spring-messaging</module>
-    <module>webflow-tiles</module>
     <module>SpringDataJpa</module>
   </modules>
 </project>
