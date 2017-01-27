@@ -17,7 +17,8 @@
     <module>TestRest</module>
     <module>spring-rest-hibernate</module>
     <module>spring-messaging</module>
-    <module>webflow-tiles</module>
+    <!--<module>webflow-tiles</module>-->
     <module>SpringDataJpa</module>
+    <module>spring-security-custom</module>
   </modules>
 </project>
