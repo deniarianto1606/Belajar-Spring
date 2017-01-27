@@ -23,6 +23,7 @@ public class CustomAuthenticationLogoutSuccessHandler implements LogoutHandler {
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         try {
             //lakukan custom logout disini
+            System.out.println("Success Logout");
             LOGGER.info(authentication.getName() + " Success Logout");
         } catch (Exception ex) {
             LOGGER.error("Error", ex);

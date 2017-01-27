@@ -16,7 +16,7 @@
     </listener>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>/WEB-INF/config/*-config.xml</param-value>
+        <param-value>/WEB-INF/config/web-application-config.xml</param-value>
     </context-param>
     <filter>
         <description>Filter Authentification dan Authorization menggunakan Spring Security</description>
@@ -44,12 +44,12 @@
         <servlet-name>appServlet</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <welcome-file-list>
+<!--    <welcome-file-list>
         <welcome-file>login</welcome-file>
-    </welcome-file-list>
+    </welcome-file-list>-->
     <session-config>
         <session-timeout>
-            30
+            1
         </session-timeout>
     </session-config>
 </web-app>

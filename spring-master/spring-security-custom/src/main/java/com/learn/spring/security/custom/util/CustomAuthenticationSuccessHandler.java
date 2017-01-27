@@ -18,7 +18,8 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.util.StringUtils;
 
 /**
- *
+ * Menggunakan SavedRequestAwareAuthenticationSuccessHandler : supaya jika session timeout, saat login, user langsung di redirect 
+ * ke halaman terakhir yang dia buka
  * @author DeNiSa
  */
 public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -50,6 +51,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
         clearAuthenticationAttributes(request);
         String targetUrl = savedRequest.getRedirectUrl();
         LOGGER.warn("Redirecting to DefaultSavedRequest Url: " + targetUrl);
+        System.out.println("Sukses Login");
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
 }

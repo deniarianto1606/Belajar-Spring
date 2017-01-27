@@ -11,23 +11,34 @@
     <security:debug />
 
     <security:http disable-url-rewriting="true" auto-config="false" use-expressions="true">
-        <security:intercept-url pattern="/pages/admin/*" access="isAuthenticated()" />
-        <security:intercept-url pattern="/pages/admin/**" access="hasAnyRole('ADMINISTRATOR_ROLE','ROLE_USER')"/>
+        <security:intercept-url pattern="/home" access="hasAnyRole('ADMINISTRATOR_ROLE','ROLE_USER')" />
+        <!--<security:intercept-url pattern="/pages/admin/**" access="hasAnyRole('ADMINISTRATOR_ROLE','ROLE_USER')"/>-->
         
         <!-- Custom login page -->
-        <security:form-login login-page="/" default-target-url="/WEB-INF/pages/login" authentication-success-handler-ref="myHandlerSuccessLogin"
-                             authentication-failure-url="/?login_error=1" always-use-default-target="true"/>
+        <security:form-login login-page="/"
+                             authentication-success-handler-ref="myHandlerSuccessLogin"
+                             authentication-failure-url="/?login_error=1" always-use-default-target="true"
+                             login-processing-url="/j_spring_security_check"
+                             username-parameter="j_username" 
+                             password-parameter="j_password"/>
+        
+                
         <!-- Maximum same user can logged in different session, return error when user logged in > max-session -->
         <security:session-management>
             <security:concurrency-control max-sessions="2" error-if-maximum-exceeded="true" session-registry-alias="sessionRegistry"/>
         </security:session-management>
-        <!-- Custom logout page -->
+        <!--Custom logout page--> 
         <security:custom-filter ref="logoutFilter" position="LOGOUT_FILTER" />
+       
         
         <security:csrf disabled="true"/>
     </security:http>
+    
+    
+    <bean id="requestContextFilter" class="org.springframework.web.filter.RequestContextFilter"/>
+    
     <bean id="myHandlerSuccessLogin" class="com.learn.spring.security.custom.util.CustomAuthenticationSuccessHandler" lazy-init="true">
-        <property name="defaultTargetUrl" value="/protected/home.htm" />
+        <property name="defaultTargetUrl" value="/home" />
     </bean> 
     <bean id="logoutFilter" class="org.springframework.security.web.authentication.logout.LogoutFilter">
         <constructor-arg index="0" value="/"/>
